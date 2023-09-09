@@ -12,5 +12,5 @@ public interface ServicioEmpleado {
     public List<EmpleadoDTO> listaEmpleados();
     public EmpleadoDTO agregarEmpleado(EmpleadosRecepDTO empleado);
     public Boolean encontrarDni(Integer dni);
-    public Boolean encontrarEmail(String eamil);
+    public Boolean encontrarEmail(String email);
 }

@@ -6,12 +6,13 @@ import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.repository.RepositorioEmpleado;
 import com.neoris.turnosrotativos.services.ServicioEmpleado;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
-
+@Service
 public class ServicioImpl implements ServicioEmpleado {
     @Autowired
     private RepositorioEmpleado repositorioEmpleado;
