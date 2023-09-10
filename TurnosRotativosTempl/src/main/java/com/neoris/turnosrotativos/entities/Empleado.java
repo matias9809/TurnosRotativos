@@ -2,48 +2,48 @@ package com.neoris.turnosrotativos.entities;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Empleado {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO,generator = "native")
+    @GenericGenerator(name = "native",strategy = "native")
     private Integer id;
-    @NotNull(message = "El numero de documento no puede ser nulo")
-    @NotBlank(message = "El numero de documento  no puede estar en blanco")
+    @NotNull(message = "nroDocumento es un campo obligatorio")
     private Integer nroDocumento;
-    @NotNull(message = "El nombre no puede ser nulo")
-    @NotBlank(message = "El nombre no puede estar en blanco")
+    @NotNull(message = "nombre es un campo obligatorio")
+    @NotBlank(message = "nombre es un campo obligatorio")
     private String nombre;
-    @NotNull(message = "El apellido no puede ser nulo")
-    @NotBlank(message = "El apellido no puede estar en blanco")
+    @NotNull(message = "apellido es un campo obligatorio")
+    @NotBlank(message = "apellido es un campo obligatorio")
     private String apellido;
 
-    @NotNull(message = "El email no puede ser nulo")
-    @NotBlank(message = "El email no puede estar en blanco")
+    @NotNull(message = "email es un campo obligatorio")
+    @NotBlank(message = "email es un campo obligatorio")
     @Email(message = "El email ingresado no es correcto.")
-    private String Email;
-    @NotNull(message = "La fecha de nacimiento no puede ser nula")
-    @NotBlank(message = "La fecha de nacimiento  no puede estar en blanco")
+    private String email;
+    @NotNull(message = "fechaNacimiento es un campo obligatorio")
     private LocalDate fechaNacimiento;
-    @NotNull(message = "La fecha de ingreso no puede ser nula")
-    @NotBlank(message = "La fecha de ingreso no puede estar en blanco")
+    @NotNull(message = "fechaIngreso es un campo obligatorio")
     private LocalDate fechaIngreso;
     private LocalDateTime fehcaCreacion;
+    @OneToMany(mappedBy = "empleado",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<JornadaLaboral> listaJornadas=new ArrayList<>();
+    public Empleado(){}
 
     public Empleado(Integer nroDocumento, String nombre, String apellido, String email, LocalDate fechaNacimiento, LocalDate fechaIngreso) {
         this.nroDocumento = nroDocumento;
         this.nombre = nombre;
         this.apellido = apellido;
-        Email = email;
+        this.email = email;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaIngreso = fechaIngreso;
         this.fehcaCreacion=LocalDateTime.now();
@@ -53,12 +53,16 @@ public class Empleado {
         return id;
     }
 
+    public LocalDateTime getFehcaCreacion() {
+        return fehcaCreacion;
+    }
+
     public LocalDate getFechaIngreso() {
         return fechaIngreso;
     }
 
-    public LocalDateTime getFehcaCreacion() {
-        return fehcaCreacion;
+    public void setFechaIngreso(LocalDate fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
     }
 
     public Integer getNroDocumento() {
@@ -86,11 +90,11 @@ public class Empleado {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -100,6 +104,14 @@ public class Empleado {
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
+    public void agregarJornada(JornadaLaboral jornadaLaboral){
+        jornadaLaboral.setEmpleado(this);
+        this.listaJornadas.add(jornadaLaboral);
+    }
+
+    public List<JornadaLaboral> getListaJornadas() {
+        return listaJornadas;
+    }
 
     @Override
     public String toString() {
@@ -108,7 +120,7 @@ public class Empleado {
                 ", nroDocumento=" + nroDocumento +
                 ", nombre='" + nombre + '\'' +
                 ", apellido='" + apellido + '\'' +
-                ", Email='" + Email + '\'' +
+                ", Email='" + email + '\'' +
                 ", fechaNacimiento=" + fechaNacimiento+'\'' +
                 ", fechaIngreso=" + fechaIngreso +'\''+
                 ", fehcaCreacion=" + fehcaCreacion.toLocalDate()+

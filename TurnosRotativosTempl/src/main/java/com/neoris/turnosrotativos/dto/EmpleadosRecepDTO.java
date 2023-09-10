@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 public class EmpleadosRecepDTO {
     @NotNull(message = "El numero de documento no puede ser nulo")
-    @NotBlank(message = "El numero de documento  no puede estar en blanco")
     private Integer nroDocumento;
     @NotNull(message = "El nombre no puede ser nulo")
     @NotBlank(message = "El nombre no puede estar en blanco")
@@ -20,23 +19,19 @@ public class EmpleadosRecepDTO {
     @NotNull(message = "El email no puede ser nulo")
     @NotBlank(message = "El email no puede estar en blanco")
     @Email(message = "El email ingresado no es correcto.")
-    private String Email;
+    private String email;
     @NotNull(message = "La fecha de nacimiento no puede ser nula")
-    @NotBlank(message = "La fecha de nacimiento  no puede estar en blanco")
     private LocalDate fechaNacimiento;
     @NotNull(message = "La fecha de ingreso no puede ser nula")
-    @NotBlank(message = "La fecha de ingreso no puede estar en blanco")
     private LocalDate fechaIngreso;
-    private LocalDateTime fehcaCreacion;
 
     public EmpleadosRecepDTO(Integer nroDocumento, String nombre, String apellido, String email, LocalDate fechaNacimiento, LocalDate fechaIngreso) {
         this.nroDocumento = nroDocumento;
         this.nombre = nombre;
         this.apellido = apellido;
-        Email = email;
+        this.email = email;
         this.fechaNacimiento = fechaNacimiento;
         this.fechaIngreso = fechaIngreso;
-        this.fehcaCreacion=LocalDateTime.now();
     }
 
     public Integer getNroDocumento() {
@@ -52,7 +47,7 @@ public class EmpleadosRecepDTO {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public LocalDate getFechaNacimiento() {
@@ -63,7 +58,5 @@ public class EmpleadosRecepDTO {
         return fechaIngreso;
     }
 
-    public LocalDateTime getFehcaCreacion() {
-        return fehcaCreacion;
-    }
+
 }

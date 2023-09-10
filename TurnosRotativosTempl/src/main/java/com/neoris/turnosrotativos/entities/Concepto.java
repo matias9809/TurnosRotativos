@@ -1,21 +1,24 @@
 package com.neoris.turnosrotativos.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "conceptos")
 public class Concepto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO,generator = "native")
+    @GenericGenerator(name = "native",strategy = "native")
     private Integer id;
     private String nombre;
     private Boolean laborable;
     private Integer hsMinimo;
     private Integer hsMaximo;
-
+    @OneToMany(mappedBy = "concepto",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<JornadaLaboral> jornadaLaboral=new ArrayList<>();
     public Integer getId() {
         return id;
     }
@@ -54,5 +57,9 @@ public class Concepto {
 
     public void setHsMaximo(Integer hsMaximo) {
         this.hsMaximo = hsMaximo;
+    }
+    public void agregarJornadaLaboral(JornadaLaboral jornadaLaboral){
+        jornadaLaboral.setConcepto(this);
+        this.jornadaLaboral.add(jornadaLaboral);
     }
 }

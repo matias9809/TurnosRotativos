@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RepositorioEmpleado extends JpaRepository<Empleado,Long> {
-    Optional<Empleado> findById(Integer id);
+public interface EmpleadoRepository extends JpaRepository<Empleado,Integer> {
+//    Optional<Empleado> findById(Integer id);
     Boolean existsByEmail(String email);
     Boolean existsByNroDocumento(Integer Documento);
 

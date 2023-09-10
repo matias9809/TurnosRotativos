@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class EmpleadoDTO {
     private Integer id;
     @NotNull(message = "El numero de documento no puede ser nulo")
-    @NotBlank(message = "El numero de documento  no puede estar en blanco")
     private Integer nroDocumento;
     @NotNull(message = "El nombre no puede ser nulo")
     @NotBlank(message = "El nombre no puede estar en blanco")
