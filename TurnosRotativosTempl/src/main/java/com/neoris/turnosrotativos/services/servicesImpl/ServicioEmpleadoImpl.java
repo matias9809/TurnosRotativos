@@ -68,8 +68,8 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
     }
 
     @Override
-    public ResponseEntity<Object> modificarEmpleado(Integer Id, EmpleadosRecepDTO empleadosRecepDTO) {
-        Empleado empleado=repositorioEmpleado.findById(Id).orElse(null);
+    public ResponseEntity<Object> modificarEmpleado(Integer nroDocumento, EmpleadosRecepDTO empleadosRecepDTO) {
+        Empleado empleado=repositorioEmpleado.findByNroDocumento(nroDocumento).orElse(null);
         if(empleado==null){
             return new ResponseEntity<>("Empleado no encontrado",HttpStatus.NOT_FOUND);
         }
@@ -112,5 +112,14 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
     @Override
     public Boolean encontrarEmail(String email) {
         return repositorioEmpleado.existsByEmail(email);
+    }
+
+    @Override
+    public ResponseEntity<Object> eliminarEmpleado(Integer id) {
+        if (repositorioEmpleado.existsById(id)){
+            return new ResponseEntity<>("No se encontro el empleado con id: "+id,HttpStatus.NOT_FOUND);
+        }
+        repositorioEmpleado.deleteById(id);
+        return new ResponseEntity<>("El empleado fue eliminado con exito",HttpStatus.NO_CONTENT);
     }
 }

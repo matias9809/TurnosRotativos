@@ -23,8 +23,18 @@ public class ControladorEmpleado {
     public ResponseEntity<List<EmpleadoDTO>> mostrarEmpleados(){
         return servicioEmpleado.listaEmpleados();
     }
-    @GetMapping("/empleado/{empleadoId}")
-    public ResponseEntity<Object> obternerInformacionEmpleado(@PathVariable Integer id){
-        return servicioEmpleado.encontrarEmpleado(id);
+
+    @GetMapping("/empleado/{id}")
+    public ResponseEntity<Object> obternerInformacionEmpleado(@PathVariable String id){
+        return servicioEmpleado.encontrarEmpleado(Integer.parseInt(id));
     }
+    @PutMapping("/empleado/{empleadoId}")
+    public ResponseEntity<Object> modificarEmpleado(@PathVariable String empleadoId,@RequestBody EmpleadosRecepDTO empleadosRecepDTO){
+        return servicioEmpleado.modificarEmpleado(Integer.parseInt(empleadoId),empleadosRecepDTO);
+    }
+    @DeleteMapping("/empleado/{id}")
+    public ResponseEntity<Object> eliminarEmpleado(@PathVariable String id){
+        return servicioEmpleado.eliminarEmpleado(Integer.parseInt(id));
+    }
+
 }

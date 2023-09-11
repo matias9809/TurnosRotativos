@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado,Integer> {
-//    Optional<Empleado> findById(Integer id);
+    Optional<Empleado> findByNroDocumento(Integer nroDocumento);
     Boolean existsByEmail(String email);
     Boolean existsByNroDocumento(Integer Documento);
 

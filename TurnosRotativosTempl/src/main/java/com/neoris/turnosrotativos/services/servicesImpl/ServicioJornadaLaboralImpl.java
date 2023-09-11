@@ -52,7 +52,7 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
 
         if (concepto.getNombre().equals("Dia Libre")){
             List<JornadaLaboral> listJOrr=jornadaLaborals.stream()
-                    .filter(jor->jor.getFecha().isEqual(jornada.getFecha())&&(concepto.getNombre().equals("Turno Extra")||concepto.getNombre().equals("Turno Normal")))
+                    .filter(jor->jor.getFecha().isEqual(jornada.getFecha())&&!jor.getIdConcepto().equals(3))
                     .collect(Collectors.toList());
             if (jornada.getHorasTrabajadas()>0){
                 return new ResponseEntity<>("El concepto engresado no requiere el ingreso de 'hs Trabajadas'.",HttpStatus.BAD_REQUEST);
@@ -62,7 +62,7 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
             }
 
         }
-        if (!empleado.getListaJornadas().stream().filter(jor->jor.getFecha()==jornada.getFecha()&&concepto.getNombre().equals("Dia Libre")).collect(Collectors.toList()).isEmpty()){
+        if (!empleado.getListaJornadas().stream().filter(jor->jor.getFecha().isEqual(jornada.getFecha())&&jor.getIdConcepto().equals(3)).collect(Collectors.toList()).isEmpty()){
             return new ResponseEntity<>("El empleado cuenta con un dia libre en esa fecha",HttpStatus.BAD_REQUEST);
         }
         if (!listaJOr.isEmpty()){
@@ -76,30 +76,30 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
         LocalDate primerDia=obtenerPrimerDia(jornada.getFecha());
         List<JornadaLaboral> jornadasFiltradas=new ArrayList<>();
         for (int i=0; i<6;i++){
-            primerDia.plusDays(i);
+            LocalDate fecha=primerDia.plusDays(i);
             for (JornadaLaboral jor:
                  empleado.getListaJornadas()) {
-                if (jor.getFecha()==primerDia){
+                if (jor.getFecha().isEqual(fecha)){
                     jornadasFiltradas.add(jor);
                 }
             }
         }
         int horasTrabajadasEnLaSemana=0;
-        if(jornadasFiltradas.contains(true)){
-            for (int i=0; i<=jornadasFiltradas.size();i++){
-                horasTrabajadasEnLaSemana+=jornadasFiltradas.get(i).getHorasTrabajadas();
+        if(!jornadasFiltradas.isEmpty()){
+            for (JornadaLaboral jor:jornadasFiltradas){
+                horasTrabajadasEnLaSemana=horasTrabajadasEnLaSemana+jor.getHorasTrabajadas();
             }
         }
         if (horasTrabajadasEnLaSemana+ jornada.getHorasTrabajadas()>48){
             return new ResponseEntity<>("El empleado ingresado supera las 48 horas semanales.",HttpStatus.BAD_REQUEST);
         }
-        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto()==conceptoRepository.findByNombre("Turno Extra").get().getId()).collect(Collectors.toList()).size()==3){
+        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto().equals(2)).collect(Collectors.toList()).size()==3&&concepto.getId().equals(2)){
             return new ResponseEntity<>("El empleado ya cuenta con 3 turnos extra esta semana.",HttpStatus.BAD_REQUEST);
         }
-        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto()==conceptoRepository.findByNombre("Turno Normal").get().getId()).collect(Collectors.toList()).size()==5){
+        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto().equals(1)).collect(Collectors.toList()).size()==5&&concepto.getId().equals(1)){
             return new ResponseEntity<>("El empleado ya cuenta con 5 turnos normales esta semana.",HttpStatus.BAD_REQUEST);
         }
-        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto()==conceptoRepository.findByNombre("Dia Libre").get().getId()).collect(Collectors.toList()).size()==1){
+        if (jornadasFiltradas.stream().filter(jor->jor.getIdConcepto().equals(3)).collect(Collectors.toList()).size()==1&&concepto.getId().equals(3)){
             return new ResponseEntity<>("El empleado no cuenta con mas dias libres esta semana.",HttpStatus.BAD_REQUEST);
         }
         JornadaLaboral nuevaJornada=new JornadaLaboral(jornada.getFecha(),jornada.getHorasTrabajadas());
@@ -110,5 +110,55 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
         conceptoRepository.save(concepto);
         JornadaLaboralDTO nuevaJornadaDTO=new JornadaLaboralDTO(nuevaJornada.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),nuevaJornada.getFecha(),concepto.getNombre(), nuevaJornada.getHorasTrabajadas());
         return new ResponseEntity<>(nuevaJornadaDTO,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> jornadaEmpleado(Integer nroDocumento) {
+        Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
+        List<JornadaLaboral> lista=empleado.getListaJornadas();
+        System.out.println(lista);
+        return new ResponseEntity<>(lista,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> listaJornadas() {
+        List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
+                .stream()
+                .map(jorl -> {
+                    Concepto concepto= conceptoRepository.findById(jorl.getIdConcepto()).orElse(null);
+                    Empleado empleado=empleadoRepository.findById(jorl.getIdEmpleado()).orElse(null);
+                    return new JornadaLaboralDTO(jorl.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jorl.getFecha(),concepto.getNombre(), jorl.getHorasTrabajadas());
+        }).collect(Collectors.toList());
+        return new ResponseEntity<>(lista,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> jornadaFecha(LocalDate fecha) {
+        List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
+                .stream()
+                .filter(jorFil->jorFil.getFecha().isEqual(fecha))
+                .map(jor->{
+                    Empleado empleado=empleadoRepository.findById(jor.getIdEmpleado()).orElse(null);
+                    Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
+                    return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(),concepto.getNombre(), jor.getHorasTrabajadas());
+
+                }).collect(Collectors.toList());
+        return new ResponseEntity<>(lista,HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<Object> jornadaEmpleadoFecha(Integer nroDocumento, LocalDate fecha) {
+        Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
+        if (empleado==null){
+            return new ResponseEntity<>("No existe un empleado con el documento ingresado",HttpStatus.BAD_REQUEST);
+        }
+        List<JornadaLaboralDTO> lista=empleado.getListaJornadas()
+                .stream()
+                .filter(jorFil->jorFil.getFecha().isEqual(fecha))
+                .map(jor->{
+                    Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
+                    return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(), concepto.getNombre(), jor.getHorasTrabajadas());
+                }).collect(Collectors.toList());
+        return new ResponseEntity<>(lista,HttpStatus.OK);
     }
 }
