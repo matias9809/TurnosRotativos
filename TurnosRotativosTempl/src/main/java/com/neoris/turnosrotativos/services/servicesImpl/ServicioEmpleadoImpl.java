@@ -4,6 +4,7 @@ import com.neoris.turnosrotativos.dto.EmpleadoDTO;
 import com.neoris.turnosrotativos.dto.EmpleadosRecepDTO;
 import com.neoris.turnosrotativos.entities.Empleado;
 import com.neoris.turnosrotativos.repository.EmpleadoRepository;
+import com.neoris.turnosrotativos.repository.JornadaLaboralRepository;
 import com.neoris.turnosrotativos.services.ServicioEmpleado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,13 +21,16 @@ import static java.util.stream.Collectors.toList;
 public class ServicioEmpleadoImpl implements ServicioEmpleado {
     @Autowired
     EmpleadoRepository repositorioEmpleado;
+    @Autowired
+    JornadaLaboralRepository jornadaLaboralRepository;
     @Override
     public ResponseEntity<Object> encontrarEmpleado(Integer id) {
         Optional<Empleado> empleado=this.repositorioEmpleado.findById(id);
         if (empleado.isPresent()){
-            return new ResponseEntity<>(empleado.map(EmpleadoDTO::new),HttpStatus.OK);
+            return new ResponseEntity<>(new EmpleadoDTO(empleado.get()),HttpStatus.OK);
         }
         else{
+
             return new ResponseEntity<>("No se encontro el empleado con Id: "+id,HttpStatus.NOT_FOUND);
         }
     }
@@ -43,10 +47,10 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
         if(Period.between(empleadosRecepDTO.getFechaNacimiento(), LocalDate.now()).getYears()<18){
             return new ResponseEntity<>("La edad del empleado no puede ser menor a 18 años", HttpStatus.BAD_REQUEST);
         }
-        if (encontrarDni(empleadosRecepDTO.getNroDocumento())){
+        if (repositorioEmpleado.existsById(empleadosRecepDTO.getNroDocumento())){
             return new ResponseEntity<>("Ya existe un empleado con el documento ingresado", HttpStatus.CONFLICT);
         }
-        if (encontrarEmail(empleadosRecepDTO.getEmail())){
+        if (repositorioEmpleado.existsByEmail(empleadosRecepDTO.getEmail())){
             return new ResponseEntity<>("Ya existe un empleado con el email ingresado",HttpStatus.CONFLICT);
         }
         if(LocalDate.now().isBefore(empleadosRecepDTO.getFechaIngreso())){
@@ -68,18 +72,18 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
     }
 
     @Override
-    public ResponseEntity<Object> modificarEmpleado(Integer nroDocumento, EmpleadosRecepDTO empleadosRecepDTO) {
-        Empleado empleado=repositorioEmpleado.findByNroDocumento(nroDocumento).orElse(null);
+    public ResponseEntity<Object> modificarEmpleado(Integer id, EmpleadosRecepDTO empleadosRecepDTO) {
+        Empleado empleado=repositorioEmpleado.findById(id).orElse(null);
         if(empleado==null){
             return new ResponseEntity<>("Empleado no encontrado",HttpStatus.NOT_FOUND);
         }
         if (Period.between(empleadosRecepDTO.getFechaNacimiento(),LocalDate.now()).getYears()<18){
             return new ResponseEntity<>("La edad del empleado no puede ser menor a 18 años",HttpStatus.BAD_REQUEST);
         }
-        if (encontrarDni(empleadosRecepDTO.getNroDocumento())){
+        if (repositorioEmpleado.findAll().stream().filter(emp->emp.getId().equals(empleadosRecepDTO.getNroDocumento())).collect(toList()).size()>1){
             return new ResponseEntity<>("Ya existe un empleado con el documento ingresado", HttpStatus.CONFLICT);
         }
-        if (encontrarEmail(empleadosRecepDTO.getEmail())){
+        if (repositorioEmpleado.findAll().stream().filter(emp->emp.getEmail().equals(empleadosRecepDTO.getEmail())).collect(toList()).size()>1){
             return new ResponseEntity<>("Ya existe un empleado con el email ingresado",HttpStatus.CONFLICT);
         }
         if(LocalDate.now().isBefore(empleadosRecepDTO.getFechaIngreso())){
@@ -116,7 +120,7 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
 
     @Override
     public ResponseEntity<Object> eliminarEmpleado(Integer id) {
-        if (repositorioEmpleado.existsById(id)){
+        if (!repositorioEmpleado.existsById(id)){
             return new ResponseEntity<>("No se encontro el empleado con id: "+id,HttpStatus.NOT_FOUND);
         }
         repositorioEmpleado.deleteById(id);

@@ -17,10 +17,10 @@ public class JornadaLaboral {
     private LocalDate fecha;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Integer horasTrabajadas;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="concepto_id")
     private Concepto concepto;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="empleado_id")
     private Empleado empleado;
 
