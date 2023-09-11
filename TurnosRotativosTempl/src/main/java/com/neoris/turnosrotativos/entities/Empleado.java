@@ -35,7 +35,7 @@ public class Empleado {
     @NotNull(message = "fechaIngreso es un campo obligatorio")
     private LocalDate fechaIngreso;
     private LocalDateTime fehcaCreacion;
-    @OneToMany(mappedBy = "empleado",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "empleado",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<JornadaLaboral> listaJornadas=new ArrayList<>();
     public Empleado(){}
 
@@ -124,6 +124,7 @@ public class Empleado {
                 ", fechaNacimiento=" + fechaNacimiento+'\'' +
                 ", fechaIngreso=" + fechaIngreso +'\''+
                 ", fehcaCreacion=" + fehcaCreacion.toLocalDate()+
+                ",listaJornadasLaborales"+this.listaJornadas+
                 '}';
     }
 }

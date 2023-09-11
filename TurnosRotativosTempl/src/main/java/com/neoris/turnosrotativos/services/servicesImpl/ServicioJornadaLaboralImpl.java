@@ -39,31 +39,39 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
         if (concepto==null){
             return new ResponseEntity<>("No existe el concepto ingresado.",HttpStatus.NOT_FOUND);
         }
+        List<JornadaLaboral> jornadaLaborals=empleado.getListaJornadas();
+        List<JornadaLaboral> listaJOr=jornadaLaborals.stream().filter(jor-> jor.getFecha().isEqual(jornada.getFecha())&&jor.getIdConcepto()==jornada.getIdConcepto()).collect(Collectors.toList());
         if (concepto.getNombre().equals("Turno Extra")||concepto.getNombre().equals("Turno Normal")){
             if (jornada.getHorasTrabajadas()==null){
                 return new ResponseEntity<>("hs Trabajadas es obligatorio para el concepto ingresado.",HttpStatus.BAD_REQUEST);
             }
-            else if (jornada.getHorasTrabajadas()>concepto.getHsMinimo()&&jornada.getHorasTrabajadas()>concepto.getHsMaximo()){
+            else if (jornada.getHorasTrabajadas()<concepto.getHsMinimo()||jornada.getHorasTrabajadas()>concepto.getHsMaximo()){
                 return new ResponseEntity<>("El rango de horas que se puede cargar para este concepto es de "+concepto.getHsMinimo()+"-"+concepto.getHsMaximo()+".",HttpStatus.BAD_REQUEST);
             }
         }
+
         if (concepto.getNombre().equals("Dia Libre")){
+            List<JornadaLaboral> listJOrr=jornadaLaborals.stream()
+                    .filter(jor->jor.getFecha().isEqual(jornada.getFecha())&&(concepto.getNombre().equals("Turno Extra")||concepto.getNombre().equals("Turno Normal")))
+                    .collect(Collectors.toList());
             if (jornada.getHorasTrabajadas()>0){
                 return new ResponseEntity<>("El concepto engresado no requiere el ingreso de 'hs Trabajadas'.",HttpStatus.BAD_REQUEST);
             }
+            else if (!listJOrr.isEmpty()){
+                return new ResponseEntity<>("El empleado no puede cargar un Dia Libre si cargo un turno previamente para la fecha ingresada.",HttpStatus.BAD_REQUEST);
+            }
+
         }
         if (!empleado.getListaJornadas().stream().filter(jor->jor.getFecha()==jornada.getFecha()&&concepto.getNombre().equals("Dia Libre")).collect(Collectors.toList()).isEmpty()){
             return new ResponseEntity<>("El empleado cuenta con un dia libre en esa fecha",HttpStatus.BAD_REQUEST);
         }
-        if (empleado.getListaJornadas().stream().filter(jor->jor.getFecha()==jornada.getFecha()&&conceptoRepository.findById(jor.getIdConcepto()).orElse(null).getNombre().equals(concepto.getNombre())).collect(Collectors.toList()).size()==1){
+        if (!listaJOr.isEmpty()){
             return new ResponseEntity<>("El empleado ya tiene registrado una jornada con este concepto en la fecha ingresada. ",HttpStatus.BAD_REQUEST);
         }
-        if(!empleado.getListaJornadas().stream().filter(jorn -> jorn.getFecha() == jornada.getFecha() && (jorn.getHorasTrabajadas() + jornada.getHorasTrabajadas()) > 12
+
+        if(!empleado.getListaJornadas().stream().filter(jorn -> jorn.getFecha().isEqual(jornada.getFecha())  && (jorn.getHorasTrabajadas() + jornada.getHorasTrabajadas()) > 12
         ).collect(Collectors.toList()).isEmpty()){
             return new ResponseEntity<>("El empleado no puede cargar mas de 12 horas trabajadas en un dia",HttpStatus.BAD_REQUEST);
-        }
-        if (!empleado.getListaJornadas().stream().filter(jor->jor.getFecha()==jornada.getFecha()&&(concepto.getNombre().equals("Turno Extra")||concepto.getNombre().equals("Turno Normal"))).collect(Collectors.toList()).isEmpty()){
-            return new ResponseEntity<>("El empleado no puede cargar un Dia Libre se carg un turno previamente para la fecha ingresada.",HttpStatus.BAD_REQUEST);
         }
         LocalDate primerDia=obtenerPrimerDia(jornada.getFecha());
         List<JornadaLaboral> jornadasFiltradas=new ArrayList<>();
@@ -98,6 +106,8 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
         empleado.agregarJornada(nuevaJornada);
         concepto.agregarJornadaLaboral(nuevaJornada);
         jornadaLaboralRepository.save(nuevaJornada);
+        empleadoRepository.save(empleado);
+        conceptoRepository.save(concepto);
         JornadaLaboralDTO nuevaJornadaDTO=new JornadaLaboralDTO(nuevaJornada.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),nuevaJornada.getFecha(),concepto.getNombre(), nuevaJornada.getHorasTrabajadas());
         return new ResponseEntity<>(nuevaJornadaDTO,HttpStatus.OK);
     }

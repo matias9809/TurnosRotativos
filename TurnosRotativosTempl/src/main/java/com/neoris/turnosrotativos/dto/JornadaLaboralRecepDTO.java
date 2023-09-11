@@ -12,8 +12,8 @@ public class JornadaLaboralRecepDTO {
     private Integer idConcepto;
     @NotNull(message = "fechca es obligatorio")
     private LocalDate fecha;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Integer horasTrabajadas;
+    @NotNull
+    private Integer horasTrabajadas=0;
     public JornadaLaboralRecepDTO(Integer idEmpleado,Integer idConcepto,LocalDate fecha, Integer horasTrabajadas){
         this.idConcepto=idConcepto;
         this.idEmpleado=idEmpleado;

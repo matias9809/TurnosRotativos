@@ -17,7 +17,7 @@ public class Concepto {
     private Boolean laborable;
     private Integer hsMinimo;
     private Integer hsMaximo;
-    @OneToMany(mappedBy = "concepto",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "concepto",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private List<JornadaLaboral> jornadaLaboral=new ArrayList<>();
     public Integer getId() {
         return id;
