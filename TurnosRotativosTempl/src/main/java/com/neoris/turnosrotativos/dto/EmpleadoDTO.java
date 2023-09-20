@@ -29,7 +29,7 @@ public class EmpleadoDTO {
     @NotNull(message = "La fecha de ingreso no puede ser nula")
     @NotBlank(message = "La fecha de ingreso no puede estar en blanco")
     private LocalDate fechaIngreso;
-    private LocalDateTime fehcaCreacion;
+    private LocalDateTime fechaCreacion;
     public EmpleadoDTO(Empleado empleado){
         this.id= empleado.getId();
         this.nroDocumento= empleado.getNroDocumento();
@@ -38,7 +38,7 @@ public class EmpleadoDTO {
         this.Email= empleado.getEmail();
         this.fechaIngreso=empleado.getFechaIngreso();
         this.fechaNacimiento=empleado.getFechaNacimiento();
-        this.fehcaCreacion=empleado.getFehcaCreacion();
+        this.fechaCreacion =empleado.getFehcaCreacion();
     }
 
     public Integer getId() {
@@ -69,8 +69,8 @@ public class EmpleadoDTO {
         return fechaIngreso;
     }
 
-    public LocalDate getFehcaCreacion() {
-        return fehcaCreacion.toLocalDate();
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion.toLocalDate();
     }
 
     @Override
@@ -83,7 +83,7 @@ public class EmpleadoDTO {
                 ", Email='" + Email + '\'' +
                 ", fechaNacimiento=" + fechaNacimiento +
                 ", fechaIngreso=" + fechaIngreso +
-                ", fehcaCreacion=" + fehcaCreacion.toLocalDate() +
+                ", fehcaCreacion=" + fechaCreacion.toLocalDate() +
                 '}';
     }
 }

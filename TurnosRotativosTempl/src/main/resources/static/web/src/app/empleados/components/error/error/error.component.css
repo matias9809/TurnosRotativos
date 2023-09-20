@@ -1,0 +1,17 @@
+div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+p{
+  color: aliceblue;
+  background-color: red;
+  font-size: larger;
+}
+button{
+  border: 2px solid blue;
+  background-color: rgba(0, 0, 255, 0.338);
+  color: azure;
+  border-radius: 15px;
+}

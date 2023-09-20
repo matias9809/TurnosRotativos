@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class ControladorEmpleado {
     @Autowired
     ServicioEmpleado servicioEmpleado;
@@ -29,7 +30,7 @@ public class ControladorEmpleado {
         return servicioEmpleado.encontrarEmpleado(Integer.parseInt(id));
     }
     @PutMapping("/empleado/{empleadoId}")
-    public ResponseEntity<Object> modificarEmpleado(@PathVariable String empleadoId,@RequestBody EmpleadosRecepDTO empleadosRecepDTO){
+    public ResponseEntity<Object> modificarEmpleado(@PathVariable String empleadoId,@Valid @RequestBody EmpleadosRecepDTO empleadosRecepDTO){
         return servicioEmpleado.modificarEmpleado(Integer.parseInt(empleadoId),empleadosRecepDTO);
     }
     @DeleteMapping("/empleado/{id}")

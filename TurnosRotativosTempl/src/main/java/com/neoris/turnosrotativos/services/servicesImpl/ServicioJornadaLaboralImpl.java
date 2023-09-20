@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -113,52 +114,46 @@ public class ServicioJornadaLaboralImpl implements ServicioJornadaLaboral {
     }
 
     @Override
-    public ResponseEntity<Object> jornadaEmpleado(Integer nroDocumento) {
-        Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
-        List<JornadaLaboral> lista=empleado.getListaJornadas();
-        System.out.println(lista);
-        return new ResponseEntity<>(lista,HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Object> listaJornadas() {
-        List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
-                .stream()
-                .map(jorl -> {
-                    Concepto concepto= conceptoRepository.findById(jorl.getIdConcepto()).orElse(null);
-                    Empleado empleado=empleadoRepository.findById(jorl.getIdEmpleado()).orElse(null);
-                    return new JornadaLaboralDTO(jorl.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jorl.getFecha(),concepto.getNombre(), jorl.getHorasTrabajadas());
-        }).collect(Collectors.toList());
-        return new ResponseEntity<>(lista,HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Object> jornadaFecha(LocalDate fecha) {
-        List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
-                .stream()
-                .filter(jorFil->jorFil.getFecha().isEqual(fecha))
-                .map(jor->{
-                    Empleado empleado=empleadoRepository.findById(jor.getIdEmpleado()).orElse(null);
-                    Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
-                    return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(),concepto.getNombre(), jor.getHorasTrabajadas());
-
-                }).collect(Collectors.toList());
-        return new ResponseEntity<>(lista,HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Object> jornadaEmpleadoFecha(Integer nroDocumento, LocalDate fecha) {
-        Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
-        if (empleado==null){
-            return new ResponseEntity<>("No existe un empleado con el documento ingresado",HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> jornadaEmpleado(@RequestParam(required = false)Integer nroDocumento,@RequestParam(required = false) LocalDate fecha) {
+        if (nroDocumento!=null&&fecha==null){
+            Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
+            List<JornadaLaboral> lista=empleado.getListaJornadas();
+            return new ResponseEntity<>(lista,HttpStatus.OK);
         }
-        List<JornadaLaboralDTO> lista=empleado.getListaJornadas()
-                .stream()
-                .filter(jorFil->jorFil.getFecha().isEqual(fecha))
-                .map(jor->{
-                    Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
-                    return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(), concepto.getNombre(), jor.getHorasTrabajadas());
-                }).collect(Collectors.toList());
-        return new ResponseEntity<>(lista,HttpStatus.OK);
+        else if(nroDocumento==null&&fecha!=null){
+            List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
+                    .stream()
+                    .filter(jorFil->jorFil.getFecha().isEqual(fecha))
+                    .map(jor->{
+                        Empleado empleado=empleadoRepository.findById(jor.getIdEmpleado()).orElse(null);
+                        Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
+                        return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(),concepto.getNombre(), jor.getHorasTrabajadas());
+
+                    }).collect(Collectors.toList());
+            return new ResponseEntity<>(lista,HttpStatus.OK);
+        } else if (nroDocumento!=null&&fecha!=null) {
+            Empleado empleado=empleadoRepository.findByNroDocumento(nroDocumento).orElse(null);
+            if (empleado==null){
+                return new ResponseEntity<>("No existe un empleado con el documento ingresado",HttpStatus.BAD_REQUEST);
+            }
+            List<JornadaLaboralDTO> lista=empleado.getListaJornadas()
+                    .stream()
+                    .filter(jorFil->jorFil.getFecha().isEqual(fecha))
+                    .map(jor->{
+                        Concepto concepto=conceptoRepository.findById(jor.getIdConcepto()).orElse(null);
+                        return new JornadaLaboralDTO(jor.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jor.getFecha(), concepto.getNombre(), jor.getHorasTrabajadas());
+                    }).collect(Collectors.toList());
+            return new ResponseEntity<>(lista,HttpStatus.OK);
+        }
+        else {
+            List<JornadaLaboralDTO> lista=jornadaLaboralRepository.findAll()
+                    .stream()
+                    .map(jorl -> {
+                        Concepto concepto= conceptoRepository.findById(jorl.getIdConcepto()).orElse(null);
+                        Empleado empleado=empleadoRepository.findById(jorl.getIdEmpleado()).orElse(null);
+                        return new JornadaLaboralDTO(jorl.getId(), empleado.getNroDocumento(), empleado.getNombre()+" "+empleado.getApellido(),jorl.getFecha(),concepto.getNombre(), jorl.getHorasTrabajadas());
+                    }).collect(Collectors.toList());
+            return new ResponseEntity<>(lista,HttpStatus.OK);
+        }
     }
 }

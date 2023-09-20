@@ -1,0 +1,47 @@
+.contenedorTabla{
+  display: flex;
+  flex-direction:column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+table {
+  width: 80%;
+  font-size: small !important;
+  width:max-content;
+  margin: 2px;
+}
+th,td{
+  border: 1px solid black;
+  text-align: center;
+  margin: 5px !important;
+  padding: 5px !important;
+}
+.contenedorAgregar{
+  display: flex;
+  justify-content: center;
+}
+.contenedorAgregar button{
+  border: 2px solid blue;
+  background-color: rgba(0, 0, 255, 0.338);
+  color: azure;
+  border-radius: 15px;
+}
+img{
+  width: 15px;
+}
+header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: blue;
+  color: aliceblue
+}
+h1{text-align: center;}
+.paginator{
+  border: 1px solid black;
+margin-bottom: 20px;
+}
+
+

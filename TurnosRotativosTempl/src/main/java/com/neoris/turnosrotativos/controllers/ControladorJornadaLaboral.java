@@ -24,18 +24,8 @@ public class ControladorJornadaLaboral {
     }
     @GetMapping("/jornada")
     public ResponseEntity<Object> listaJornadas(@RequestParam(required = false )Integer nroDocumento,@RequestParam(required = false) String fecha){
-        if (nroDocumento!=null&&fecha==null){
-            return servicioJornadaLaboral.jornadaEmpleado(nroDocumento);
-        }
-        else if(nroDocumento==null&&fecha!=null){
-            return servicioJornadaLaboral.jornadaFecha(LocalDate.parse(fecha));
-        } else if (nroDocumento!=null&&fecha!=null) {
-            return servicioJornadaLaboral.jornadaEmpleadoFecha(nroDocumento,LocalDate.parse(fecha));
-        }
-        else {
-            return servicioJornadaLaboral.listaJornadas();
-        }
 
+        return servicioJornadaLaboral.jornadaEmpleado(nroDocumento,LocalDate.parse(fecha));
     }
 
 }
