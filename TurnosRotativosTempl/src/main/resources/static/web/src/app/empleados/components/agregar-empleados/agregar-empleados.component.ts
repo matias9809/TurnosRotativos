@@ -59,7 +59,7 @@ export class AgregarEmpleadosComponent {
         console.log(data.statusCodeValue)
         this.router.navigate(['empleados'])
     }),((error:any) => {
-      Swal.fire('Error ! ', 'No se ha podido actualizar el empleado','error');
+      Swal.fire('Error ! ', 'No se ha podido agregar el empleado','error');
       this.router.navigate(['empleados'])
     })
 
