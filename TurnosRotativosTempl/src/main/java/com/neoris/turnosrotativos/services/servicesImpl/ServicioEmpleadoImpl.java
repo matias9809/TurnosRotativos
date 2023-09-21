@@ -68,7 +68,7 @@ public class ServicioEmpleadoImpl implements ServicioEmpleado {
         Empleado nuevoEmpleado=new Empleado(empleadosRecepDTO.getNroDocumento(), empleadosRecepDTO.getNombre(), empleadosRecepDTO.getApellido(), empleadosRecepDTO.getEmail(), empleadosRecepDTO.getFechaNacimiento(),empleadosRecepDTO.getFechaIngreso());
         repositorioEmpleado.save(nuevoEmpleado);
         EmpleadoDTO mostrarEmpleado= new EmpleadoDTO(nuevoEmpleado);
-        return new ResponseEntity<>(mostrarEmpleado,HttpStatus.CREATED);
+        return new ResponseEntity<>(mostrarEmpleado,HttpStatus.OK);
     }
 
     @Override

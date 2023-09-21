@@ -26,7 +26,14 @@ th,td{
   border: 2px solid blue;
   background-color: rgba(0, 0, 255, 0.338);
   color: azure;
+  padding: 10px;
   border-radius: 15px;
+}
+.contenedorAgregar button:hover{
+  background-color: rgba(0, 0, 255, 0.578);
+  color: white;
+  border: 1px solid blue;
+  cursor:pointer
 }
 img{
   width: 15px;
@@ -42,6 +49,11 @@ h1{text-align: center;}
 .paginator{
   border: 1px solid black;
 margin-bottom: 20px;
+}
+@media(max-width:765px){
+  .ocultar{
+    display: none !important;
+  }
 }
 
 

@@ -1,1 +1,58 @@
-<p>agregar-empleados works!</p>
+<header>
+  <p>Stark Industries</p>
+  <h1>Gestion de empleados</h1>
+</header>
+<div class="contenedorForm">
+  <h2>Modificar Empleado</h2>
+  <form  [formGroup]="formulario" (ngSubmit)="agregarEmpleado()">
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Nombre</i>
+      </span>
+      <input pInputText placeholder="Nombre" formControlName="nombre">
+      <p *ngIf="formulario.get('nombre')?.invalid&&formulario.get('nombre')?.value" class="alert alert-danger mt-2 p-2">nombre invalido</p>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Apellido</i>
+      </span>
+      <input pInputText placeholder="Apellido" formControlName="apellido"/>
+      <p *ngIf="formulario.get('apellido')?.invalid&&formulario.get('apellido')?.value" class="alert alert-danger mt-2 p-2">apellido invalido</p>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Documento</i>
+      </span>
+      <input pInputText placeholder="Documento" formControlName="nroDocumento"/>
+      <p *ngIf="formulario.get('nroDocumento')?.invalid&&formulario.get('nroDocumento')?.value" class="alert alert-danger mt-2 p-2">nro de documento invalido
+      </p>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Email</i>
+      </span>
+      <input pInputText placeholder="Email" formControlName="email" />
+      <p *ngIf="formulario.get('email')?.invalid&&formulario.get('email')?.value" class="alert alert-danger mt-2 p-2">email invalido</p>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Fecha de Ingreso</i>
+      </span>
+      <input pInputText placeholder=" Ej:2005-05-28" formControlName="fechaIngreso"/>
+      <p *ngIf="formulario.get('fechaIngreso')?.invalid&&formulario.get('fechaIngreso')?.value" class="alert alert-danger mt-2 p-2">fecha de ingreso invalido
+      </p>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user">Fecha de nacimiento</i>
+      </span>
+      <input pInputText placeholder=" Ej:1998-05-28" formControlName="fechaNacimiento" />
+      <p *ngIf="formulario.get('fechaNacimiento')?.invalid&&formulario.get('fechaNacimiento')?.value" class="alert alert-danger mt-2 p-2">fecha de nacimiento
+        invalido</p>
+    </div>
+    <div class="contenedorButton">
+      <button class="volver" type="button" (click)="volver()">volver</button>
+      <button class="guardar" type="submit">Guardar</button>
+    </div>
+  </form>
+</div>

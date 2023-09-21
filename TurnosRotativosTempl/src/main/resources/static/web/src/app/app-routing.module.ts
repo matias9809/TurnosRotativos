@@ -19,7 +19,7 @@ const routes: Routes = [{
   component:AgregarEmpleadosComponent
 },
 {
-  path:'modificarEmpleados',
+  path:'modificarEmpleados/:id',
   component:ModificarEmpleadoComponent
 },
 {

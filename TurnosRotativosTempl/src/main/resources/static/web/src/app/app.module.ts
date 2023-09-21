@@ -7,6 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AgregarEmpleadosComponent } from './empleados/components/agregar-empleados/agregar-empleados.component';
 import { ModificarEmpleadoComponent } from './empleados/components/modificar-empleado/modificar-empleado.component';
 import { VerEmpleadoComponent } from './empleados/components/ver-empleado/ver-empleado.component';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 
 @NgModule({
@@ -19,7 +21,8 @@ import { VerEmpleadoComponent } from './empleados/components/ver-empleado/ver-em
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -26,11 +26,9 @@ export class ListaEmpleadosComponent {
   traerEmpleados(){
     this.empleadoService.traerEmpleados().subscribe((data:any)=>{
       this.empleados=data
-      console.log(data)
       this.dataSource= new MatTableDataSource<any>(data)
       this.displayedColumns=this.generarColumnas(data);
       this.dataSource.paginator = this.paginator;
-      console.log(this.displayedColumns)
     },(error) => this.router.navigate(['/error']) )
   }
   generarColumnas(empleado:any){

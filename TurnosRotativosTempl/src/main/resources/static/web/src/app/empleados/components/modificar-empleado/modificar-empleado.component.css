@@ -1,0 +1,53 @@
+header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: blue;
+  color: aliceblue
+}
+h1{text-align: center;}
+.paginator{
+  border: 1px solid black;
+margin-bottom: 20px;
+}
+.contenedorForm{
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center;
+}
+.contenedorButton{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+.volver{
+  border: 2px solid red;
+  padding: 10px;
+  background-color: rgba(152, 25, 25, 0.137);
+  color: white;
+  border-radius: 15px;
+}
+.volver:hover{
+  background-color: rgba(225, 34, 34, 0.557);
+  color: white;
+  border: 1px solid #e05b58;
+  cursor:pointer
+}
+.guardar{
+  border: 2px solid green;
+  padding: 10px;
+  background-color: rgba(161, 240, 44, 0.377);
+  border-radius: 15px;
+  color: azure;
+}
+.guardar:hover{
+  background-color: green;
+  color:azure;
+  border: 1px solid rgba(0, 128, 0, 0.719);
+  cursor:pointer
+}
+.p-inputgroup-addon{
+  min-width: 12rem;
+}

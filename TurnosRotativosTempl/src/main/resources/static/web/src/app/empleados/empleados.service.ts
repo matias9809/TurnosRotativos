@@ -4,6 +4,7 @@ import { Enviroment } from './environments/enviroment';
 import { Observable, catchError } from 'rxjs';
 import { throwError as observableThrowError } from 'rxjs';
 import { Empleado } from './entidad/empleado';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,8 @@ export class EmpleadosService {
     this.Http=Https;
   }
   errorHandler(error: HttpErrorResponse){
+    console.log(error);
+
     return observableThrowError(error.message)
   }
   traerEmpleados():Observable<Empleado[]>{
@@ -27,11 +30,11 @@ export class EmpleadosService {
   obtenerEmpleado(id:number){
     return this.Http.get(`${this.apiUrl}/empleado/${id}`).pipe(catchError(this.errorHandler))
   }
-  modificarEmpleado(empleado:Empleado){
-    return this.Http.put(`${this.apiUrl}/empleado/${empleado.id}`,empleado).pipe(catchError(this.errorHandler))
+  modificarEmpleado(empleado:FormGroup, id:number){
+    return this.Http.put(`${this.apiUrl}/empleado/${id}`,empleado.value).pipe(catchError(this.errorHandler))
     }
-  agregarEmpleado(empleado:Empleado){
-    return this.Http.post(`${this.apiUrl}/empleado`,empleado).pipe(catchError(this.errorHandler))
+  agregarEmpleado(empleado:FormGroup){
+    return this.Http.post(`${this.apiUrl}/empleado`,empleado.value).pipe(catchError(this.errorHandler))
   }
 }
 

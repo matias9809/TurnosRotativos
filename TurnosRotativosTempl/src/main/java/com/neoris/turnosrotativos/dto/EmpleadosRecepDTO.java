@@ -7,22 +7,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class EmpleadosRecepDTO {
-    @NotNull(message = "El numero de documento no puede ser nulo")
+    @NotNull(message = "nro_Documento es obligatorio")
     private Integer nroDocumento;
-    @NotNull(message = "El nombre no puede ser nulo")
-    @NotBlank(message = "El nombre no puede estar en blanco")
+    @NotNull(message = "nombre es obligatorio")
+    @NotBlank(message = "nombre es obligatorio")
     private String nombre;
-    @NotNull(message = "El apellido no puede ser nulo")
-    @NotBlank(message = "El apellido no puede estar en blanco")
+    @NotNull(message = "apellido es obligatorio")
+    @NotBlank(message = "apellido es obligarorio")
     private String apellido;
 
-    @NotNull(message = "El email no puede ser nulo")
-    @NotBlank(message = "El email no puede estar en blanco")
+    @NotNull(message = "email es obligatorio")
+    @NotBlank(message = "email es obligatorio")
     @Email(message = "El email ingresado no es correcto.")
     private String email;
-    @NotNull(message = "La fecha de nacimiento no puede ser nula")
+    @NotNull(message = "fecha_Nacimiento es obligatorio")
     private LocalDate fechaNacimiento;
-    @NotNull(message = "La fecha de ingreso no puede ser nula")
+    @NotNull(message = "fecha_ingreso es obligatorio")
     private LocalDate fechaIngreso;
 
     public EmpleadosRecepDTO(Integer nroDocumento, String nombre, String apellido, String email, LocalDate fechaNacimiento, LocalDate fechaIngreso) {

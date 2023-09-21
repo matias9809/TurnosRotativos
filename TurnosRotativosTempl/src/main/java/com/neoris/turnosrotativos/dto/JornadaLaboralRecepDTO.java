@@ -10,7 +10,7 @@ public class JornadaLaboralRecepDTO {
     private Integer idEmpleado;
     @NotNull(message = "idConcepto es obligatorio")
     private Integer idConcepto;
-    @NotNull(message = "fechca es obligatorio")
+    @NotNull(message = "fecha es obligatorio")
     private LocalDate fecha;
     @NotNull
     private Integer horasTrabajadas=0;
